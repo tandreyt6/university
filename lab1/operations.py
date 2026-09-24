@@ -1,10 +1,12 @@
 import math, sys
 from typing import List, Tuple
 
+DIS = 2
+
 def _solve(args) -> Tuple[int]|None:
     if None in [args.a, args.b, args.c]:
         raise ValueError("coefficient is missing!")
-    if any(map(lambda x: x > 10000, [args.a, args.b, args.c])):
+    if any(map(lambda x: abs(x) > DIS, [args.a, args.b, args.c])):
         raise ValueError("coefficient is too large!")
     a, b, c = args.a, args.b, args.c
     D = b**2 - 4*a*c
@@ -20,8 +22,13 @@ def _solve(args) -> Tuple[int]|None:
 
 def solve(args):
     print(f"Input: {args.a}*X^2 + {args.b}*X + {args.c}")
-    X1, X2, D = _solve(args) or (None, None, None)
-    print(f"Output: x1 = {X1:.3f}, x2 = {X2:.3f}, D = {D}")
+    try:
+        X1, X2, D = _solve(args) or (None, None, None)
+    except ValueError as e:
+        print("Программа упала:", e)
+        sys.exit(1)
+    print(f"Output: x1 = {X1:.3f}, x2 = {X2:.3f}, D = {D}" if X1 and X2 else f"X1 and X2 is None, D = {D}")
+
     sys.exit(0)
 
 all_operations = {

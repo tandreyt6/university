@@ -9,7 +9,6 @@ arg_parser.add_argument('-b', type=int, help='The coefficient \'B\'')
 arg_parser.add_argument('-c', type=int, help='The coefficient \'C\'')
 
 args = arg_parser.parse_args()
-
 if args.type is None:
     arg_parser.print_help()
     sys.exit(0)
