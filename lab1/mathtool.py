@@ -1,6 +1,6 @@
 import argparse
 import sys
-from operations import all_operations
+from lab1.operations import all_operations
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('type', choices=['solve'], help='Select type of operation')
