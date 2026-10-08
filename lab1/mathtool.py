@@ -1,18 +1,26 @@
 import argparse
 import sys
-from operations import all_operations
+import os
+import loader
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('type', choices=['solve'], help='Select type of operation')
-arg_parser.add_argument('-a', type=int, help='The coefficient \'A\'')
-arg_parser.add_argument('-b', type=int, help='The coefficient \'B\'')
-arg_parser.add_argument('-c', type=int, help='The coefficient \'C\'')
+subparsers = arg_parser.add_subparsers(dest='type', required=True)
+
+path = "./modules"
+files = [
+    file for file in os.listdir(path)
+    if os.path.isfile(os.path.join(path, file)) and file.endswith(".py")
+]
+
+all_modules = {}
+for file in files:
+    name = os.path.splitext(file)[0]
+    cls = loader.load_file(os.path.join(path, file))
+    parser = subparsers.add_parser(name)
+    obj = cls(parser)
+    obj.register()
+    all_modules[name] = obj
 
 args = arg_parser.parse_args()
-if args.type is None:
-    arg_parser.print_help()
-    sys.exit(0)
-if args.type in all_operations:
-    all_operations[args.type](args)
-    sys.exit(0)
-raise ValueError("Unknown operation type")
+
+sys.exit(all_modules[args.type].run(args))
