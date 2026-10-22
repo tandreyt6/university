@@ -6,7 +6,7 @@ import loader
 arg_parser = argparse.ArgumentParser()
 subparsers = arg_parser.add_subparsers(dest='type', required=True)
 
-path = "./modules"
+path = os.path.join(os.path.dirname(__file__), "modules")
 files = [
     file for file in os.listdir(path)
     if os.path.isfile(os.path.join(path, file)) and file.endswith(".py")

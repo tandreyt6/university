@@ -7,7 +7,7 @@ class Module(Module):
         self.parser = parser
 
     def register(self):
-        self.parser.add_argument('--func', choices=['third', 'sqplus'], required=True)
+        self.parser.add_argument('--func', choices=['third', 'sqplus', 'test'], required=True)
         group = self.parser.add_mutually_exclusive_group(required=True)
         group.add_argument('--terms', type=int)
         group.add_argument('--eps', type=float)
@@ -18,7 +18,7 @@ class Module(Module):
                 raise ValueError("Invalid terms!")
             if args.eps is not None and not (isfinite(args.eps) and 0 < args.eps <= 0.0001):
                 raise ValueError("Invalid eps!")
-            total, n = self._solve(args)
+            total, n = self._f(args)
         except ValueError as e:
             print("Программа упала:", e)
             return 1
@@ -26,12 +26,18 @@ class Module(Module):
         print("Сумма ряда:", f"{total:.4f}")
         return 0
 
-    def _solve(self, args):
+    def _f(self, args):
         total, n = 0, 0
         while True:
             n += 1
-            x = 1 / (3*n) if args.func == 'third' else 1 / (n**2 + 1)
-            x *= (-1)**(n+1)
+            if args.func == 'third':
+                x = (-1)**(n+1) / (3*n)
+            elif args.func == 'sqplus':
+                x = (-1)**(n+1) / (n**2 + 1)
+            elif args.func == "test":
+                x = (-1)**(n+1) / (n**5 - 12)
+            else:
+                raise ValueError("Unknown func!")
             total += x
             if args.terms is not None and n >= args.terms:
                 break

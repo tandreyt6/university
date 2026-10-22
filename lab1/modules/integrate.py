@@ -2,6 +2,14 @@ import argparse
 import math
 import sys
 from AbsClass import Module
+from dataclasses import dataclass
+from modules import solve
+
+@dataclass
+class nado:
+    a: float
+    b: float
+    c: float
 
 class Module(Module):
     MIN_STEPS = 1
@@ -10,13 +18,16 @@ class Module(Module):
     RATIO_MIN, RATIO_MAX = 0, 20
     ROOT_MIN, ROOT_MAX = -5, 5
 
-    FUNCTIONS = {
-        'ratio': ('_ratio', RATIO_MIN, RATIO_MAX, True),
-        'root': ('_root', ROOT_MIN, ROOT_MAX, False)
-    }
-
     def __init__(self, parser: argparse.ArgumentParser):
         self.parser = parser
+        self.FUNCTIONS = {
+                'ratio': ('_ratio', self.RATIO_MIN, self.RATIO_MAX, True),
+                'root': ('_root', self.ROOT_MIN, self.ROOT_MAX, False)
+            }
+        m = solve.Module(self.parser)
+        d = nado(-1, 1, 1)
+        x1, x2, d = m._solve(d)
+        self.FUNCTIONS["da"] = ('_da', x1, x2, False)
 
     def register(self):
         self.parser.add_argument('--func', choices=self.FUNCTIONS, required=True)
@@ -53,6 +64,10 @@ class Module(Module):
     @staticmethod
     def _ratio(x):
         return x / (x + 1)
+
+    @staticmethod
+    def _da(x):
+        return -x**2 + x + 1
 
     @staticmethod
     def _root(x):
